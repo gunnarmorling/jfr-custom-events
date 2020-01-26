@@ -12,21 +12,27 @@ import org.eclipse.microprofile.metrics.MetricType;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
+import jdk.jfr.FlightRecorder;
 import jdk.jfr.consumer.RecordingStream;
 
 @ApplicationScoped
 public class Metrics {
 
-    private RecordingStream rs;
+    private RecordingStream recordingStream;
 
     @Inject
     MetricRegistry metricsRegistry;
 
-    public void onStartup(@Observes StartupEvent se) {
-        rs = new RecordingStream();
-        rs.enable(JaxRsInvocationEvent.NAME);
+    public void registerEvent(@Observes StartupEvent se) {
+        FlightRecorder.register(JaxRsInvocationEvent.class);
+        System.out.println("#### Registered");
+    }
 
-        rs.onEvent(JaxRsInvocationEvent.NAME, event -> {
+    public void onStartup(@Observes StartupEvent se) {
+        recordingStream = new RecordingStream();
+        recordingStream.enable(JaxRsInvocationEvent.NAME);
+
+        recordingStream.onEvent(JaxRsInvocationEvent.NAME, event -> {
 
             String path = event.getString("path").replaceAll("(\\/)([0-9]+)(\\/?)", "$1{param}$3");
             String method = event.getString("method");
@@ -44,13 +50,13 @@ public class Metrics {
                 metricsRegistry.timer(name).update(event.getDuration().toNanos(), TimeUnit.NANOSECONDS);
             }
         });
-        rs.startAsync();
+        recordingStream.startAsync();
     }
 
     public void stop(@Observes ShutdownEvent se) {
-        rs.close();
+        recordingStream.close();
         try {
-            rs.awaitTermination();
+            recordingStream.awaitTermination();
         }
         catch (InterruptedException e) {
             throw new RuntimeException(e);

@@ -8,6 +8,8 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.ext.Provider;
 
+import org.jboss.resteasy.core.ResourceMethodInvoker;
+
 @Provider
 public class FlightRecorderFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
@@ -20,13 +22,6 @@ public class FlightRecorderFilter implements ContainerRequestFilter, ContainerRe
         }
 
         event.begin();
-
-        event.method = requestContext.getMethod();
-        event.mediaType = String.valueOf(requestContext.getMediaType());
-        event.path = String.valueOf(requestContext.getUriInfo().getPath());
-        event.length = requestContext.getLength();
-        event.queryParameters = requestContext.getUriInfo().getQueryParameters().toString();
-        event.headers = requestContext.getHeaders().toString();
     }
 
     @Override
@@ -38,16 +33,29 @@ public class FlightRecorderFilter implements ContainerRequestFilter, ContainerRe
             return;
         }
 
-        event.responseLength = responseContext.getLength();
-        event.responseHeaders = responseContext.getHeaders().toString();
-        event.status = responseContext.getStatus();
-
         event.end();
+        event.path = String.valueOf(requestContext.getUriInfo().getPath());
 
         if (event.shouldCommit()) {
+            event.method = requestContext.getMethod();
+            event.mediaType = String.valueOf(requestContext.getMediaType());
+            event.length = requestContext.getLength();
+            event.queryParameters = requestContext.getUriInfo().getQueryParameters().toString();
+            event.headers = requestContext.getHeaders().toString();
+            event.javaMethod = getJavaMethod(requestContext);
+            event.responseLength = responseContext.getLength();
+            event.responseHeaders = responseContext.getHeaders().toString();
+            event.status = responseContext.getStatus();
+
             event.commit();
         }
 
         event.reset();
+    }
+
+    private String getJavaMethod(ContainerRequestContext requestContext) {
+        String propName = "org.jboss.resteasy.core.ResourceMethodInvoker";
+        ResourceMethodInvoker invoker = (ResourceMethodInvoker)requestContext.getProperty(propName);
+        return invoker.getMethod().toString();
     }
 }
