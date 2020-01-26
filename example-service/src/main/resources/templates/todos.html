@@ -1,0 +1,65 @@
+{#include base.html}
+{#title}My Todos{/title}
+{#contents}
+
+<form action="/todo" method="GET" name="search" up-target=".container">
+  <div class="form-row align-items-center">
+    <div class="col-sm-3 my-1">
+      <label class="sr-only" for="filter">Search</label>
+      <input type="text" name="filter" class="form-control" id="filter" placeholder="Search By Title" required {#if filtered}value="{filter}"{/if}>
+    </div>
+
+    <input class="btn btn-primary" value="Search" type="submit">&nbsp;
+    <a class="btn btn-secondary {#if !filtered}disabled{/if}" href="/todo" role="button" up-target=".container">Clear Filter</a>
+  </div>
+</form>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th scope="col" class="fit">Id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+      <th scope="col" >Title</th>
+      <th scope="col" class="fit">Priority</th>
+      <th scope="col" class="fit">Completed</th>
+      <th scope="col" class="fit">Actions</th>
+    </tr>
+  </thead>
+
+  {#if todos.size == 0}
+  <tr>
+    <td colspan="5">No data found.</td>
+  </tr>
+  {#else}
+
+  {#for todo in todos}
+  <tr>
+    <th scope="row">#{todo.id}</th>
+    <td {#if todo.completed}class="completed"{/if}>
+      {todo.title}
+    </td>
+    <td {#if todo.completed}class="completed"{/if}>
+      {todo.priority}
+    </td>
+    <td>
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" disabled id="completed-{todo.id}" {#if todo.completed}checked{/if}>
+        <label class="custom-control-label" for="completed-{todo.id}"></label>
+      </div>
+    </td>
+    <td class="fit">
+      <form action="/todo/{todo.id}/delete" method="POST" name="delete-{todo.id}" up-target=".container">
+        <a class="btn btn-primary btn-sm" href="/todo/{todo.id}/edit" role="button" up-modal=".modalenabled">Edit</a>
+        <input class="btn btn-danger btn-sm" value="Delete" type="submit">
+      </form>
+    </td>
+  </tr>
+  {/for}
+  {/if}
+</table>
+
+<hr>
+<h2>New Todo</h2>
+{#include todo-form.html}{/include}
+
+{/contents}
+{/include}
