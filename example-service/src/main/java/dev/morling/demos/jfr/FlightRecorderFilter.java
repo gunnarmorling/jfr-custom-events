@@ -15,19 +15,21 @@ public class FlightRecorderFilter implements ContainerRequestFilter, ContainerRe
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        JaxRsInvocationEvent event = JaxRsInvocationEvent.INSTANCE.get();
+        JaxRsInvocationEvent event = new JaxRsInvocationEvent();
 
         if (!event.isEnabled()) {
             return;
         }
 
         event.begin();
+
+        requestContext.setProperty(JaxRsInvocationEvent.NAME, event);
     }
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
             throws IOException {
-        JaxRsInvocationEvent event = JaxRsInvocationEvent.INSTANCE.get();
+        JaxRsInvocationEvent event = (JaxRsInvocationEvent) requestContext.getProperty(JaxRsInvocationEvent.NAME);
 
         if (!event.isEnabled()) {
             return;
@@ -49,8 +51,6 @@ public class FlightRecorderFilter implements ContainerRequestFilter, ContainerRe
 
             event.commit();
         }
-
-        event.reset();
     }
 
     private String getJavaMethod(ContainerRequestContext requestContext) {

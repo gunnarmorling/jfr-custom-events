@@ -9,9 +9,6 @@ public class PathFilterControl extends SettingControl {
 
     private Pattern pattern = Pattern.compile(".*");
 
-    public PathFilterControl() {
-    }
-
     @Override
     public void setValue(String value) {
         System.out.println("SetValue #### " + value);

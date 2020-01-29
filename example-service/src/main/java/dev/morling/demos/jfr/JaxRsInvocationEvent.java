@@ -1,6 +1,7 @@
 package dev.morling.demos.jfr;
 
 import jdk.jfr.Category;
+import jdk.jfr.DataAmount;
 import jdk.jfr.Description;
 import jdk.jfr.Event;
 import jdk.jfr.Label;
@@ -16,11 +17,6 @@ import jdk.jfr.StackTrace;
 class JaxRsInvocationEvent extends Event {
 
     static final String NAME = "dev.morling.jfr.JaxRsInvocation";
-
-    public static final ThreadLocal<JaxRsInvocationEvent> INSTANCE = ThreadLocal.withInitial(JaxRsInvocationEvent::new);
-
-    private JaxRsInvocationEvent() {
-    }
 
     @Label("Resource Method")
     public String method;
@@ -41,6 +37,7 @@ class JaxRsInvocationEvent extends Event {
     public String headers;
 
     @Label("Length")
+    @DataAmount
     public int length;
 
     @Label("Response Headers")
@@ -51,19 +48,6 @@ class JaxRsInvocationEvent extends Event {
 
     @Label("Response Status")
     public int status;
-
-    public void reset() {
-        method = null;
-        mediaType = null;
-        path = null;
-        length = -1;
-        queryParameters = null;
-        headers = null;
-        responseHeaders = null;
-        responseLength = -1;
-        status = -1;
-        javaMethod = null;
-    }
 
     @Label("Path Filter")
     @SettingDefinition
