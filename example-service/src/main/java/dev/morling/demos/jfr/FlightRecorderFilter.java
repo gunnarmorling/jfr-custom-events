@@ -31,7 +31,7 @@ public class FlightRecorderFilter implements ContainerRequestFilter, ContainerRe
             throws IOException {
         JaxRsInvocationEvent event = (JaxRsInvocationEvent) requestContext.getProperty(JaxRsInvocationEvent.NAME);
 
-        if (!event.isEnabled()) {
+        if (event == null || !event.isEnabled()) {
             return;
         }
 
