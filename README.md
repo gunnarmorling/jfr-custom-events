@@ -4,6 +4,10 @@ Example code accompanying the [blog post](https://www.morling.dev/blog/rest-api-
 It shows how to use custom event types with Java Flight Recorder and Mission Control to gain insight into runtime performance of a JAX-RS based REST API.
 It also demonstrates how to export Flight Recorder events in realtime via MicroProfile Metrics, using the Flight Recorderstreaming API added in Java 14.
 
+![Custom Flight Recorder Events in JDK Mission Control](jfr_jax_rs_events.png)
+
+![Metrics for Flight Recorder Events in Grafana](jfr_grafana.png)
+
 Update Feb. 8th: the example has been expanded to show the usage of the [JFR datasource](https://github.com/rh-jmc-team/jfr-datasource) for Grafana.
 
 ## Build
@@ -36,6 +40,8 @@ curl -F "file=@/path/to/my/recording.jfr" localhost:8081/load
 ```
 
 Then open the "JFR Events" dashboard in Grafana and zoom into the time range of the recording.
+
+![JFR Datasource in Grafana](jfr_datasource.png)
 
 # License
 
