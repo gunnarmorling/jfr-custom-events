@@ -60,10 +60,24 @@ services:
       - 3000:3000
     links:
       - prometheus
+      - jfr-data-source
     volumes:
       - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
       - ./grafana-all-dashboards.yml:/etc/grafana/provisioning/dashboards/all.yml
       - ./grafana-todo-dashboard.json:/var/lib/grafana/dashboards/grafana-todo-dashboard.json
+      - ./jfr-datasource/dashboards/dashboard.json:/var/lib/grafana/dashboards/grafana-jfr-dashboard.json
+    environment:
+      GF_INSTALL_PLUGINS: grafana-simple-json-datasource
+    networks:
+      - my-network
+
+  jfr-data-source:
+    image: dev.morling/jfr-data-source:1.0
+    build:
+      context: jfr-datasource/
+      dockerfile: docker/Dockerfile.jvm
+    ports:
+      - 8081:8080
     networks:
       - my-network
 

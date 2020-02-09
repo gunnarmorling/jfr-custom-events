@@ -6,3 +6,8 @@ datasources:
   url: http://prometheus:9090
   access: proxy
   version: 1
+- name: jfr
+  type: grafana-simple-json-datasource
+  url: http://jfr-data-source:8080
+  access: proxy
+  version: 1
