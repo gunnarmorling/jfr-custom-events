@@ -1,8 +1,8 @@
-# Java Flight Recorder Custom Events
+# JDK Flight Recorder Custom Events
 
-Example code accompanying the [blog post](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/) "Monitoring REST APIs with Java Flight Recorder Custom Events".
-It shows how to use custom event types with Java Flight Recorder and Mission Control to gain insight into runtime performance of a JAX-RS based REST API.
-It also demonstrates how to export Flight Recorder events in realtime via MicroProfile Metrics, using the Flight Recorderstreaming API added in Java 14.
+Example code accompanying the [blog post](https://www.morling.dev/blog/rest-api-monitoring-with-custom-jdk-flight-recorder-events/) "Monitoring REST APIs with JDK Flight Recorder Custom Events".
+It shows how to use custom event types with JDK Flight Recorder and Mission Control to gain insight into runtime performance of a JAX-RS based REST API.
+It also demonstrates how to export Flight Recorder events in realtime via MicroProfile Metrics, using the JDK Flight Recorder event streaming API ([JEP 349](https://openjdk.java.net/jeps/349)) added in Java 14.
 
 ![Custom Flight Recorder Events in JDK Mission Control](jfr_jax_rs_events.png)
 
