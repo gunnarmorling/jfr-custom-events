@@ -30,6 +30,18 @@ You then can connect to the running application on port 1898 using Mission Contr
 start Flight Recorder and observe "JAX-RS" events in the recording.
 You also can observe the exported metrics via Grafana at http://localhost:3000/.
 
+### Dev Mode
+
+When working on the example service, it can be started in the Quarkus dev mode instead of packaging it as a container image for faster feedback;
+
+```shell
+docker-compose up --build --scale example-service=0
+
+mvn compile quarkus:dev -f example-service/pom.xml
+```
+
+When starting a recording, make sure to use the process for _target/flight-recorder-demo-dev.jar_.
+
 ## Loading JFR Recordings into Grafana
 
 The JFR datasource has been setup in Grafana.
