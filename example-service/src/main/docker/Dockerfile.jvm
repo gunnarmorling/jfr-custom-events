@@ -28,8 +28,8 @@ FROM fedora:32
 
 RUN mkdir /tmp/jdk \
      && cd /tmp/jdk \
-     && curl -O https://download.java.net/java/GA/jdk14.0.2/205943a0976c4ed48cb16f1043c5c647/12/GPL/openjdk-14.0.2_linux-x64_bin.tar.gz \
-     && tar -xvf openjdk-14.0.2_linux-x64_bin.tar.gz
+     && curl -O https://download.java.net/java/GA/jdk15/779bf45e88a44cbd9ea6621d33e33db1/36/GPL/openjdk-15_linux-x64_bin.tar.gz \
+     && tar -xvf openjdk-15_linux-x64_bin.tar.gz
 
 COPY target/lib/* /deployments/lib/
 COPY target/*-runner.jar /deployments/app.jar
@@ -38,4 +38,4 @@ EXPOSE 8080
 # run with user 1001
 # USER 1001
 
-ENTRYPOINT [ "/tmp/jdk/jdk-14.0.2/bin/java", "-Dcom.sun.management.jmxremote", "-Dcom.sun.management.jmxremote.port=1898", "-Dcom.sun.management.jmxremote.rmi.port=1898", "-Djava.rmi.server.hostname=0.0.0.0", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false", "-Dcom.sun.management.jmxremote.local.only=false", "-jar", "/deployments/app.jar", "-Dquarkus.http.host=0.0.0.0", "-Djava.util.logging.manager=org.jboss.logmanager.LogManager" ]
+ENTRYPOINT [ "/tmp/jdk/jdk-15/bin/java", "-Dcom.sun.management.jmxremote", "-Dcom.sun.management.jmxremote.port=1898", "-Dcom.sun.management.jmxremote.rmi.port=1898", "-Djava.rmi.server.hostname=0.0.0.0", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false", "-Dcom.sun.management.jmxremote.local.only=false", "-jar", "/deployments/app.jar", "-Dquarkus.http.host=0.0.0.0", "-Djava.util.logging.manager=org.jboss.logmanager.LogManager" ]
