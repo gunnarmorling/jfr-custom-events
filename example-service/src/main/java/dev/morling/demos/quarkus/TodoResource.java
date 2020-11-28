@@ -81,6 +81,18 @@ public class TodoResource {
             .build();
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response addTodo(Todo todo) {
+        todo.persist();
+
+        return Response.created(URI.create("/todo/" + todo.id))
+            .entity(todo)
+            .build();
+    }
+
     @GET
     @Produces(MediaType.TEXT_HTML)
     @Path("/{id}/edit")
