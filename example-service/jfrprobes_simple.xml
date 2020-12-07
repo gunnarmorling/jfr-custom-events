@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+
+   DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+
+   The contents of this file are subject to the terms of either the Universal Permissive License
+   v 1.0 as shown at http://oss.oracle.com/licenses/upl
+
+   or the following license:
+
+   Redistribution and use in source and binary forms, with or without modification, are permitted
+   provided that the following conditions are met:
+
+   1. Redistributions of source code must retain the above copyright notice, this list of conditions
+   and the following disclaimer.
+
+   2. Redistributions in binary form must reproduce the above copyright notice, this list of
+   conditions and the following disclaimer in the documentation and/or other materials provided with
+   the distribution.
+
+   3. Neither the name of the copyright holder nor the names of its contributors may be used to
+   endorse or promote products derived from this software without specific prior written permission.
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+   IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+   FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+   WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<jfragent>
+<config>
+		<classprefix>__JFREvent</classprefix>
+		<allowtostring>true</allowtostring>
+		<allowconverter>true</allowconverter>
+	</config>
+	<events>
+		<event id="jdbc.PreparedQuery">
+			<label>Prepared Query</label>
+			<description>Defined in the xml file and added by the agent.</description>
+			<path>Hibernate</path>
+			<stacktrace>true</stacktrace>
+			<class>io.agroal.pool.wrapper.PreparedStatementWrapper</class>
+			<method>
+				<name>executeQuery</name>
+				<!--<descriptor>(Ljava/lang/String;)Lio/quarkus/qute/TemplateInstance;</descriptor>-->
+
+				<descriptor>()Ljava/sql/ResultSet;</descriptor>
+				<!--
+				<parameters>
+					<parameter index="0">
+						<name>String Attribute</name>
+						<description>The first parameter</description>
+						<contenttype>None</contenttype>
+					</parameter>
+				</parameters>
+				-->
+				<!--
+				<returnvalue>
+					<description>The return value</description>
+					<contenttype>None</contenttype>
+				</returnvalue>
+				-->
+			</method>
+			<!-- location {ENTRY, EXIT, WRAP}-->
+			<location>WRAP</location>
+         
+			<fields>
+				<field>
+					<name>SQL Query</name>
+					<description>Capturing outer class field with class name prefixed field name</description>
+					<expression>wrappedStatement</expression>
+				</field>
+			</fields>
+         
+		</event>
+
+		<event id="jdbc.PreparedUpdate">
+			<label>Prepared Update</label>
+			<description>Defined in the xml file and added by the agent.</description>
+			<path>Hibernate</path>
+			<stacktrace>true</stacktrace>
+			<class>io.agroal.pool.wrapper.PreparedStatementWrapper</class>
+			<method>
+				<name>executeUpdate</name>
+				<descriptor>()I</descriptor>
+			</method>
+			<location>WRAP</location>
+         
+			<fields>
+				<field>
+					<name>SQL Query</name>
+					<description>Capturing outer class field with class name prefixed field name</description>
+					<expression>wrappedStatement</expression>
+				</field>
+			</fields>
+		</event>
+
+		<event id="jdbc.Query">
+			<label>Query</label>
+			<description>Defined in the xml file and added by the agent.</description>
+			<path>Hibernate</path>
+			<stacktrace>true</stacktrace>
+			<class>io.agroal.pool.wrapper.StatementWrapper</class>
+
+			<method>
+				<name>execute</name>
+				<!--<descriptor>(Ljava/lang/String;)Lio/quarkus/qute/TemplateInstance;</descriptor>-->
+
+				<descriptor>(Ljava/lang/String;)Z</descriptor>
+				
+				<parameters>
+					<parameter index="0">
+						<name>SQL Query</name>
+						<description>The first parameter</description>
+						<contenttype>None</contenttype>
+<!-- 						<converter>dev.morling.demos.jfr.TrimmingConverter</converter> -->
+					</parameter>
+				</parameters>
+				
+				<!--
+				<returnvalue>
+					<description>The return value</description>
+					<contenttype>None</contenttype>
+				</returnvalue>
+				-->
+			</method>
+			<!-- location {ENTRY, EXIT, WRAP}-->
+			<location>WRAP</location>
+		</event>
+
+		<event id="jdbc.BindParameter">
+			<label>Prepared Statement Bind Parameter</label>
+			<description>Defined in the xml file and added by the agent.</description>
+			<path>Hibernate</path>
+			<stacktrace>true</stacktrace>
+			<class>org.hibernate.type.descriptor.sql.BasicBinder</class>
+			<method>
+				<name>bind</name>
+				<descriptor>(Ljava/sql/PreparedStatement;Ljava/lang/Object;ILorg/hibernate/type/descriptor/WrapperOptions;)V</descriptor>
+
+							<parameters>
+				<parameter index="1">
+					<name>Bind Parameter</name>
+					<description>The first parameter</description>
+					<contenttype>None</contenttype>
+				</parameter>
+				<parameter index="2">
+					<name>Index</name>
+					<description>The first parameter</description>
+					<contenttype>None</contenttype>
+				</parameter>
+			</parameters>
+			</method>
+			<location>WRAP</location>
+		</event>
+	</events>
+</jfragent>

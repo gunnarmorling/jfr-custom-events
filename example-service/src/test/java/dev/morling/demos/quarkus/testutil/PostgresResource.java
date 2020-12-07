@@ -1,6 +1,6 @@
 package dev.morling.demos.quarkus.testutil;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.testcontainers.containers.BindMode;
@@ -21,11 +21,16 @@ public class PostgresResource implements QuarkusTestResourceLifecycleManager {
     @Override
     public Map<String, String> start() {
         db.start();
-        return Collections.singletonMap("quarkus.datasource.url", db.getJdbcUrl());
+
+        Map<String, String> props = new HashMap<>();
+        props.put("quarkus.datasource.jdbc.url", db.getJdbcUrl());
+        props.put("jfrunit.database.port", String.valueOf(db.getFirstMappedPort()));
+
+        return props;
     }
 
     @Override
     public void stop() {
-        db.close();
+        db.stop();
     }
 }

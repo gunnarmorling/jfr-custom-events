@@ -28,7 +28,7 @@ public class PathFilterControl extends SettingControl {
     }
 
     public boolean matches(String s) {
-        System.out.println("Matches #### " + pattern + " " + s);
+//        System.out.println("Matches #### " + pattern + " " + s);
         return pattern.matcher(s).matches();
     }
 }

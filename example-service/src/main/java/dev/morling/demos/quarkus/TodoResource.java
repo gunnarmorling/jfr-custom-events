@@ -1,11 +1,13 @@
 package dev.morling.demos.quarkus;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -17,6 +19,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.hibernate.MultiIdentifierLoadAccess;
+import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import io.quarkus.panache.common.Sort;
@@ -35,6 +39,9 @@ public class TodoResource {
 
     @Inject
     Template todos;
+
+    @Inject
+    EntityManager em;
 
     final List<Integer> priorities = IntStream.range(1, 6).boxed().collect(Collectors.toList());
 
@@ -86,6 +93,17 @@ public class TodoResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Response addTodo(Todo todo) {
+
+//        TodoDetail detail = new TodoDetail();
+//        detail.todo = todo;
+//        detail.title = "Detail 1";
+//        todo.details.add(detail);
+//
+//        detail = new TodoDetail();
+//        detail.todo = todo;
+//        detail.title = "Detail 2";
+//        todo.details.add(detail);
+
         todo.persist();
 
         return Response.created(URI.create("/todo/" + todo.id))
@@ -138,5 +156,52 @@ public class TodoResource {
         return Response.status(301)
             .location(URI.create("/todo"))
             .build();
+    }
+
+    @GET
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Response get(@PathParam("id") long id) throws Exception {
+        // Query query = em.createNativeQuery("SELECT title FROM todo.Todo, pg_sleep(1) WHERE id = ?");
+//         Object res = query.getSingleResult();
+//        query.setParameter(1, id);
+        Todo res = Todo.findById(id);
+
+
+//        User user = RestAssured
+//            .given()
+//                .port(8082)
+//            .when()
+//                .get("/users/" + res.userId)
+//                .as(User.class);
+//
+//        res.userName = user.name;
+
+//        for (TodoDetail detail : res.details) {
+//            System.out.println(detail.title);
+//        }
+
+        return Response.ok()
+                .entity(res)
+                .build();
+    }
+
+    @GET
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/multi/{ids}")
+    public Response getMulti(@PathParam("ids") String id) {
+        MultiIdentifierLoadAccess<Todo> multi = em.unwrap(Session.class).byMultipleIds(Todo.class);
+        String[] ids = id.split(",");
+        List<Long> longIds = Arrays.stream(ids)
+            .map(Long::valueOf)
+            .collect(Collectors.toList());
+
+        List<Todo> todoList = multi.multiLoad(longIds);
+
+        return Response.ok()
+                .entity(todoList)
+                .build();
     }
 }
