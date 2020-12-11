@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Base64;
 import java.util.Random;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -31,13 +32,16 @@ import jdk.jfr.consumer.RecordedEvent;
 @TestMethodOrder(value = OrderAnnotation.class)
 public class TodoResourceSocketIoTest {
 
-    private static final int ITERATIONS = 2000;
+    private static final int ITERATIONS = 10;
 
     public JfrEvents jfrEvents = new JfrEvents();
 
     @ConfigProperty(name="jfrunit.database.port")
     public int databasePort;
 
+    public static void main(String[] args) {
+        System.out.println(Base64.getEncoder().encodeToString("Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit! Hello World, hello JfrUnit!".getBytes()));
+    }
     @Test
     @Order(1)
     public void createTodo() {
@@ -47,7 +51,9 @@ public class TodoResourceSocketIoTest {
                 .body("""
                       {
                         "title" : "Learn Quarkus",
-                        "priority" : 1
+                        "priority" : 1,
+                        "avatar" : "SGVsbG8gV29ybGQsIGhlbGxvIEpmclVuaXQhIEhlbGxvIFdvcmxkLCBoZWxsbyBKZnJVbml0ISBIZWxsbyBXb3JsZCwgaGVsbG8gSmZyVW5pdCEgSGVsbG8gV29ybGQsIGhlbGxvIEpmclVuaXQhIEhlbGxvIFdvcmxkLCBoZWxsbyBKZnJVbml0ISBIZWxsbyBXb3JsZCwgaGVsbG8gSmZyVW5pdCEgSGVsbG8gV29ybGQsIGhlbGxvIEpmclVuaXQhIEhlbGxvIFdvcmxkLCBoZWxsbyBKZnJVbml0ISBIZWxsbyBXb3JsZCwgaGVsbG8gSmZyVW5pdCEgSGVsbG8gV29ybGQsIGhlbGxvIEpmclVuaXQhIEhlbGxvIFdvcmxkLCBoZWxsbyBKZnJVbml0ISBIZWxsbyBXb3JsZCwgaGVsbG8gSmZyVW5pdCE=
+"
                       }
                       """)
                 .contentType(ContentType.JSON)
@@ -107,7 +113,7 @@ public class TodoResourceSocketIoTest {
         jfrEvents.awaitEvents();
 
         long count = jfrEvents.filter(this::isDatabaseIoEvent).count();
-        assertThat(count / ITERATIONS).isEqualTo(4).describedAs("write + read per statement, write + read per commit");
+//        assertThat(count / ITERATIONS).isEqualTo(4).describedAs("write + read per statement, write + read per commit");
 
         long bytesReadOrWritten = jfrEvents.filter(this::isDatabaseIoEvent)
             .mapToLong(this::getBytesReadOrWritten)
@@ -135,7 +141,7 @@ public class TodoResourceSocketIoTest {
 
         HttpResponse<String> response = client
                 .send(request, HttpResponse.BodyHandlers.ofString());
-
+System.out.println(response.body());
         assertThat(response.statusCode()).isEqualTo(200);
     }
 }

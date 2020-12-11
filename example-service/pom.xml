@@ -139,7 +139,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${surefire-plugin.version}</version>
         <configuration>
-          <argLine>-javaagent:${org.openjdk.jmc:org.openjdk.jmc.agent:jar}=jfrprobes_simple.xml --add-opens java.base/jdk.internal.misc=ALL-UNNAMED</argLine>
+          <argLine>-javaagent:${org.openjdk.jmc:org.openjdk.jmc.agent:jar}=jfrprobes_simple.xml</argLine>
           <systemProperties>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemProperties>
