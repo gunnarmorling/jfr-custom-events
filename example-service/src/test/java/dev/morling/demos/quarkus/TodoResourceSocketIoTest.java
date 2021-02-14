@@ -48,14 +48,10 @@ public class TodoResourceSocketIoTest {
         for (int i = 1; i<= 20; i++) {
             given()
             .when()
-                .body("""
-                      {
-                        "title" : "Learn Quarkus",
-                        "priority" : 1,
-                        "avatar" : "SGVsbG8gV29ybGQsIGhlbGxvIEpmclVuaXQhIEhlbGxvIFdvcmxkLCBoZWxsbyBKZnJVbml0ISBIZWxsbyBXb3JsZCwgaGVsbG8gSmZyVW5pdCEgSGVsbG8gV29ybGQsIGhlbGxvIEpmclVuaXQhIEhlbGxvIFdvcmxkLCBoZWxsbyBKZnJVbml0ISBIZWxsbyBXb3JsZCwgaGVsbG8gSmZyVW5pdCEgSGVsbG8gV29ybGQsIGhlbGxvIEpmclVuaXQhIEhlbGxvIFdvcmxkLCBoZWxsbyBKZnJVbml0ISBIZWxsbyBXb3JsZCwgaGVsbG8gSmZyVW5pdCEgSGVsbG8gV29ybGQsIGhlbGxvIEpmclVuaXQhIEhlbGxvIFdvcmxkLCBoZWxsbyBKZnJVbml0ISBIZWxsbyBXb3JsZCwgaGVsbG8gSmZyVW5pdCE=
-"
-                      }
-                      """)
+                .body("{\n"
+                        + "                        \"title\" : \"Learn Quarkus\",\n"
+                        + "                        \"priority\" : 1\n"
+                        + "                      }")
                 .contentType(ContentType.JSON)
                 .post("/todo")
             .then()
@@ -63,7 +59,7 @@ public class TodoResourceSocketIoTest {
         }
     }
 
-//    @Test
+    @Test
     @Order(2)
     @EnableEvent(value="jdk.SocketRead", stackTrace=INCLUDED)
     @EnableEvent(value="jdk.SocketWrite", stackTrace=INCLUDED)
@@ -96,10 +92,10 @@ public class TodoResourceSocketIoTest {
         System.out.println(sum);
     }
 
-    @Test
+    //@Test
     @Order(2)
-    @EnableEvent(value="jdk.SocketRead", stackTrace=INCLUDED)
-    @EnableEvent(value="jdk.SocketWrite", stackTrace=INCLUDED)
+    @EnableEvent(value="jdk.SocketRead", threshold = 0, stackTrace=INCLUDED)
+    @EnableEvent(value="jdk.SocketWrite", threshold = 0, stackTrace=INCLUDED)
     @EnableEvent("jdbc.PreparedQuery")
     public void retrieveTodo() throws Exception {
         Random r = new Random();
@@ -113,7 +109,7 @@ public class TodoResourceSocketIoTest {
         jfrEvents.awaitEvents();
 
         long count = jfrEvents.filter(this::isDatabaseIoEvent).count();
-//        assertThat(count / ITERATIONS).isEqualTo(4).describedAs("write + read per statement, write + read per commit");
+        assertThat(count / ITERATIONS).isEqualTo(4).describedAs("write + read per statement, write + read per commit");
 
         long bytesReadOrWritten = jfrEvents.filter(this::isDatabaseIoEvent)
             .mapToLong(this::getBytesReadOrWritten)
@@ -141,7 +137,7 @@ public class TodoResourceSocketIoTest {
 
         HttpResponse<String> response = client
                 .send(request, HttpResponse.BodyHandlers.ofString());
-System.out.println(response.body());
+
         assertThat(response.statusCode()).isEqualTo(200);
     }
 }

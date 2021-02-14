@@ -1,7 +1,6 @@
 package dev.morling.demos.quarkus;
 
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
@@ -14,8 +13,8 @@ public class Todo extends PanacheEntity {
     public int priority;
     public boolean completed;
 
-    @Lob
-    public byte[] avatar;
+//    @Lob
+//    public byte[] avatar;
 //    public long userId;
 //    public String userName;
 }

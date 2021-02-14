@@ -100,6 +100,9 @@ public class TodoResourcePerformanceTest {
 
         // warm-up
         for (int i = 1; i<= 20_000; i++) {
+            if (i % 1000 == 0) {
+                System.out.println(i);
+            }
             executeRequest(r.nextInt(20) + 1, client);
         }
 
@@ -107,6 +110,9 @@ public class TodoResourcePerformanceTest {
         jfrEvents.reset();
 
         for (int i = 1; i<= 10_000; i++) {
+            if (i % 1000 == 0) {
+                System.out.println(i);
+            }
             executeRequest(r.nextInt(20) + 1, client);
         }
 
