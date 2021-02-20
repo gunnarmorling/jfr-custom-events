@@ -10,9 +10,20 @@ It also demonstrates how to export Flight Recorder events in realtime via MicroP
 
 Update Feb. 8th: the example has been expanded to show the usage of the [JFR datasource](https://github.com/rh-jmc-team/jfr-datasource) for Grafana.
 
+## Checking Out the Sources
+
+Clone the repository by running
+
+```
+git@github.com:gunnarmorling/jfr-custom-events.git --recurse-submodules
+```
+
+The `--recurse-submodules` ensures that the _jfr-datasource_ sub-module will be cloned as well.
+If you have cloned the repository omitting that option, you can run `git submodule update --init --recursive` for updating the sub-module.
+
 ## Build
 
-Make sure to have Java 14 installed.
+Make sure to have Java 15 installed.
 Run the following to build this project:
 
 ```shell
