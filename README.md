@@ -12,7 +12,7 @@ Update Feb. 8th: the example has been expanded to show the usage of the [JFR dat
 
 ## Build
 
-Make sure to have Java 14 installed.
+Make sure to have Java 15 installed.
 Run the following to build this project:
 
 ```shell
