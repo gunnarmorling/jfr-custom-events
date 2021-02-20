@@ -13,6 +13,7 @@ Update Feb. 8th: the example has been expanded to show the usage of the [JFR dat
 ## Build
 
 Make sure to have Java 15 installed.
+Make sure you have extracted the contents of https://github.com/rh-jmc-team/jfr-datasource into the empty folder ./jfr-datasource
 Run the following to build this project:
 
 ```shell
