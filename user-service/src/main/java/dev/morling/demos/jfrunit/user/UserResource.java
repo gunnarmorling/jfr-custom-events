@@ -1,4 +1,4 @@
-package dev.morling.demos;
+package dev.morling.demos.jfrunit.user;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;

@@ -1,4 +1,4 @@
-package dev.morling.demos;
+package dev.morling.demos.jfrunit.todo;
 
 public class User {
     public long id;

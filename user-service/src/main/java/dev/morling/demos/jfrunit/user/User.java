@@ -1,4 +1,4 @@
-package dev.morling.demos.quarkus;
+package dev.morling.demos.jfrunit.user;
 
 public class User {
     public long id;

@@ -3,7 +3,7 @@ version: '3.5'
 services:
 
   todo-db:
-    image: postgres:11
+    image: postgres:13
     ports:
      - 5432:5432
     environment:
@@ -14,72 +14,6 @@ services:
      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
      - my-network
-
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-    volumes:
-     - ./servers.json:/pgadmin4/servers.json
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - my-network
-
-  example-service:
-    image: dev.morling/flight-recorder-example-service:1.0
-    build:
-      context: example-service/
-      dockerfile: src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
-    ports:
-      - 8080:8080
-      - 1898:1898
-    environment:
-      QUARKUS_DATASOURCE_URL: jdbc:postgresql://todo-db:5432/tododb
-    links:
-      - todo-db
-    networks:
-      - my-network
-
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - 9090:9090
-    links:
-      - example-service
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - my-network
-
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - 3000:3000
-    links:
-      - prometheus
-      - jfr-data-source
-    volumes:
-      - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
-      - ./grafana-all-dashboards.yml:/etc/grafana/provisioning/dashboards/all.yml
-      - ./grafana-todo-dashboard.json:/var/lib/grafana/dashboards/grafana-todo-dashboard.json
-      - ./jfr-datasource/dashboards/dashboard.json:/var/lib/grafana/dashboards/grafana-jfr-dashboard.json
-    environment:
-      GF_INSTALL_PLUGINS: grafana-simple-json-datasource
-    networks:
-      - my-network
-
-  jfr-data-source:
-    image: dev.morling/jfr-data-source:1.0
-    build:
-      context: jfr-datasource/
-      dockerfile: docker/Dockerfile.jvm
-    ports:
-      - 8081:8080
-    networks:
-      - my-network
 
 networks:
   my-network:

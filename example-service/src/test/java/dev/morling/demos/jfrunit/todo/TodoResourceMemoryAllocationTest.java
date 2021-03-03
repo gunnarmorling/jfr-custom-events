@@ -1,4 +1,4 @@
-package dev.morling.demos.quarkus;
+package dev.morling.demos.jfrunit.todo;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,12 +12,11 @@ import java.net.http.HttpResponse;
 import java.util.Locale;
 import java.util.Random;
 
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
-import dev.morling.demos.quarkus.testutil.PostgresResource;
+import dev.morling.demos.jfrunit.todo.testutil.PostgresResource;
 import dev.morling.jfrunit.EnableEvent;
 import dev.morling.jfrunit.JfrEvents;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -27,32 +26,27 @@ import jdk.jfr.consumer.RecordedEvent;
 
 @QuarkusTest
 @QuarkusTestResource(PostgresResource.class)
-@TestMethodOrder(value = OrderAnnotation.class)
-public class TodoResourcePerformanceTest {
+public class TodoResourceMemoryAllocationTest {
 
-    public JfrEvents jfrEvents = new JfrEvents();
+    private static final int ITERATIONS = 1_000;
+	private static final int WARMUP_IITERATIONS = 2_000;
 
-    @Test
-    @Order(1)
-    public void createTodo() {
+	public JfrEvents jfrEvents = new JfrEvents();
+
+	@BeforeAll
+    public static void setupTodos() {
         Random r = new Random();
 
         for (int i = 1; i<= 20; i++) {
             given()
             .when()
-//                .body(String.format("""
-//                      {
-//                        "title" : "Learn Quarkus",
-//                        "priority" : 1,
-//                        "userId" : %s
-//                      }
-//                      """, r.nextInt(5) + 1))
-                .body("""
-                    {
-                      "title" : "Learn Quarkus",
-                      "priority" : 1
-                    }
-                    """)
+                .body(String.format("""
+                      {
+                        "title" : "Learn Quarkus",
+                        "priority" : 1,
+                        "userId" : %s
+                      }
+                      """, r.nextInt(5) + 1))
                 .contentType(ContentType.JSON)
                 .post("/todo")
             .then()
@@ -61,7 +55,6 @@ public class TodoResourcePerformanceTest {
     }
 
 //    @Test
-    @Order(2)
     @EnableEvent("jdk.ObjectAllocationInNewTLAB")
     @EnableEvent("jdk.ObjectAllocationOutsideTLAB")
     public void retrieveTodoBaseline() throws Exception {
@@ -88,7 +81,6 @@ public class TodoResourcePerformanceTest {
     }
 
     @Test
-    @Order(2)
     @EnableEvent("jdk.ObjectAllocationInNewTLAB")
     @EnableEvent("jdk.ObjectAllocationOutsideTLAB")
 //    @EnableConfiguration("profile")
@@ -99,7 +91,7 @@ public class TodoResourcePerformanceTest {
                 .build();
 
         // warm-up
-        for (int i = 1; i<= 20_000; i++) {
+        for (int i = 1; i<= WARMUP_IITERATIONS; i++) {
             if (i % 1000 == 0) {
                 System.out.println(i);
             }
@@ -109,7 +101,7 @@ public class TodoResourcePerformanceTest {
         jfrEvents.awaitEvents();
         jfrEvents.reset();
 
-        for (int i = 1; i<= 10_000; i++) {
+        for (int i = 1; i<= ITERATIONS; i++) {
             if (i % 1000 == 0) {
                 System.out.println(i);
             }
@@ -123,12 +115,54 @@ public class TodoResourcePerformanceTest {
                 .mapToLong(this::getAllocationSize)
                 .sum();
 
-        assertThat(sum / 10_000).isLessThan(33_000);
+        assertThat(sum / ITERATIONS).isLessThan(33_000);
+    }
+
+    @Test
+    @Order(2)
+    @EnableEvent("jdk.ObjectAllocationInNewTLAB")
+    @EnableEvent("jdk.ObjectAllocationOutsideTLAB")
+    public void retrieveTodoProfileRegression() throws Exception {
+        Random r = new Random();
+
+        HttpClient client = HttpClient.newBuilder()
+                .build();
+
+        // warm-up
+        for (int i = 1; i<= WARMUP_IITERATIONS; i++) {
+            if (i % 1_000 == 0) {
+                System.out.println(i);
+            }
+            executeRequest("with-regression/", r.nextInt(20) + 1, client);
+        }
+
+        jfrEvents.awaitEvents();
+        jfrEvents.reset();
+
+        for (int i = 1; i<= ITERATIONS; i++) {
+            if (i % 1_000 == 0) {
+                System.out.println(i);
+            }
+            executeRequest("with-regression/", r.nextInt(20) + 1, client);
+        }
+
+        jfrEvents.awaitEvents();
+
+        long sum = jfrEvents.filter(this::isObjectAllocationEvent)
+                .filter(this::isRelevantThread)
+                .mapToLong(this::getAllocationSize)
+                .sum();
+
+        assertThat(sum / ITERATIONS).isLessThan(33_000);
     }
 
     private void executeRequest(long id, HttpClient client) throws URISyntaxException, IOException, InterruptedException {
+        executeRequest("", id, client);
+    }
+
+    private void executeRequest(String pathPrefix, long id, HttpClient client) throws URISyntaxException, IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8081/todo/" + id))
+                .uri(new URI("http://localhost:8081/todo/" + pathPrefix + id))
                 .headers("Content-Type", "application/json")
                 .GET()
                 .build();

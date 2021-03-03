@@ -1,4 +1,4 @@
-package dev.morling.demos.quarkus.testutil;
+package dev.morling.demos.jfrunit.todo.testutil;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

@@ -1,3 +1,4 @@
+package dev.morling.demos.jfrunit.todo;
 //package dev.morling.demos.quarkus;
 //
 //import javax.json.bind.annotation.JsonbTransient;

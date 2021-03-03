@@ -1,12 +1,12 @@
-package dev.morling.demos.quarkus;
+package dev.morling.demos.jfrunit.todo;
 
-import static dev.morling.demos.quarkus.testutil.MatchesJson.matchesJson;
+import static dev.morling.demos.jfrunit.todo.testutil.MatchesJson.matchesJson;
 import static io.restassured.RestAssured.given;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
-import dev.morling.demos.quarkus.testutil.PostgresResource;
+import dev.morling.demos.jfrunit.todo.testutil.PostgresResource;
 import dev.morling.jfrunit.EnableEvent;
 import dev.morling.jfrunit.JfrEvents;
 import io.quarkus.test.common.QuarkusTestResource;
