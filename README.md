@@ -4,14 +4,6 @@ Example code accompanying the [blog post](https://www.morling.dev/blog/rest-api-
 It shows how to use custom event types with JDK Flight Recorder and Mission Control to gain insight into runtime performance of a JAX-RS based REST API.
 It also demonstrates how to export Flight Recorder events in realtime via MicroProfile Metrics, using the JDK Flight Recorder event streaming API ([JEP 349](https://openjdk.java.net/jeps/349)) added in Java 14.
 
-### === PREREQUISITES ===
-* make sure to have Java 15 installed  
-* :heavy_exclamation_mark: make sure to have a populated jfr-datasource subdirectory after checkout by 
-  * either **git clone** ```--recurse-submodules``` on initial clone  
-  * or ```git submodule update --init --recursive``` if you have already cloned
-  * jfr-datasource is a referenced git project which stays an empty folder if you just use ```git clone ...```
-### === PREREQUISITES ===
-
 ![Custom Flight Recorder Events in JDK Mission Control](jfr_jax_rs_events.png)
 
 ![Metrics for Flight Recorder Events in Grafana](jfr_grafana.png)
@@ -19,8 +11,14 @@ It also demonstrates how to export Flight Recorder events in realtime via MicroP
 Update Feb. 8th: the example has been expanded to show the usage of the [JFR datasource](https://github.com/rh-jmc-team/jfr-datasource) for Grafana.
 
 ## Build
+### === PREREQUISITES ===
+* make sure to use java 15 for the build  
+* :heavy_exclamation_mark: make sure to have a populated jfr-datasource subdirectory after checkout by 
+  * either **git clone** ```--recurse-submodules``` on initial clone  
+  * or ```git submodule update --init --recursive``` if you have already cloned
+  * jfr-datasource is a referenced git project which stays an empty folder if you just use ```git clone ...```
+### === PREREQUISITES ===
 * Run the following to build this project:
-
 ```shell
 # Example service
 mvn clean package -f example-service/pom.xml
