@@ -4,6 +4,14 @@ Example code accompanying the [blog post](https://www.morling.dev/blog/rest-api-
 It shows how to use custom event types with JDK Flight Recorder and Mission Control to gain insight into runtime performance of a JAX-RS based REST API.
 It also demonstrates how to export Flight Recorder events in realtime via MicroProfile Metrics, using the JDK Flight Recorder event streaming API ([JEP 349](https://openjdk.java.net/jeps/349)) added in Java 14.
 
+### === PREREQUISITES ===
+* make sure to have Java 15 installed  
+* :heavy_exclamation_mark: make sure to have a populated jfr-datasource subdirectory after checkout by 
+  * either **git clone** ```--recurse-submodules``` on initial clone  
+  * or ```git submodule update --init --recursive``` if you have already cloned
+  * jfr-datasource is a referenced git project which stays an empty folder if you just use ```git clone ...```
+### === PREREQUISITES ===
+
 ![Custom Flight Recorder Events in JDK Mission Control](jfr_jax_rs_events.png)
 
 ![Metrics for Flight Recorder Events in Grafana](jfr_grafana.png)
@@ -11,13 +19,6 @@ It also demonstrates how to export Flight Recorder events in realtime via MicroP
 Update Feb. 8th: the example has been expanded to show the usage of the [JFR datasource](https://github.com/rh-jmc-team/jfr-datasource) for Grafana.
 
 ## Build
-### === PREPARATIONS ===
-* Make sure to have Java 15 installed  
-* Make sure to have contents of https://github.com/rh-jmc-team/jfr-datasource extracted in folder ./jfr-datasource  
-* Copy the file ```.\example-service\src\main\docker\Dockerfile.jvm``` to the directory ```.\jfr-datasource\src\main\docker```
-* Change [the line](https://github.com/gunnarmorling/jfr-custom-events/blob/9add5939ae91e779c7cf9037fd52421e845e0324/docker-compose.yaml#L78) ```dockerfile: docker/Dockerfile.jvm``` to ```dockerfile: src/main/docker/Dockerfile.jvm```
-### === PREPARATIONS ===
-
 * Run the following to build this project:
 
 ```shell
@@ -29,6 +30,9 @@ mvn clean package -f jfr-datasource/pom.xml
 
 docker-compose up --build
 ```
+
+If you experience the following error message please scroll up and check the prerequisites
+> POM file "jfr-datasource/pom.xml" specified the -f/--file command-line argument does not exist
 
 Open the web application at http://localhost:8080/.
 You then can connect to the running application on port 1898 using Mission Control,
