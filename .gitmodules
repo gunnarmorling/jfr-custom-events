@@ -1,4 +1,4 @@
 [submodule "path_to_submodule"] 
   path = jfr-datasource 
-  url = git@github.com:gunnarmorling/jfr-datasource.git
+  url = https://github.com/gunnarmorling/jfr-datasource.git
   

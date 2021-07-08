@@ -11,10 +11,14 @@ It also demonstrates how to export Flight Recorder events in realtime via MicroP
 Update Feb. 8th: the example has been expanded to show the usage of the [JFR datasource](https://github.com/rh-jmc-team/jfr-datasource) for Grafana.
 
 ## Build
-
-Make sure to have Java 14 installed.
-Run the following to build this project:
-
+### === PREREQUISITES ===
+* make sure to use java 15 for the build  
+* :heavy_exclamation_mark: make sure to have a populated jfr-datasource subdirectory after checkout by 
+  * either **git clone** ```--recurse-submodules``` on initial clone  
+  * or ```git submodule update --init --recursive``` if you have already cloned
+  * jfr-datasource is a referenced git project which stays an empty folder if you just use ```git clone ...```
+### === PREREQUISITES ===
+* Run the following to build this project:
 ```shell
 # Example service
 mvn clean package -f example-service/pom.xml
@@ -24,6 +28,9 @@ mvn clean package -f jfr-datasource/pom.xml
 
 docker-compose up --build
 ```
+
+If you experience the following error message please scroll up and check the prerequisites
+> POM file "jfr-datasource/pom.xml" specified the -f/--file command-line argument does not exist
 
 Open the web application at http://localhost:8080/.
 You then can connect to the running application on port 1898 using Mission Control,
