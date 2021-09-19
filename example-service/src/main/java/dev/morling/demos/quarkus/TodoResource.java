@@ -43,6 +43,8 @@ public class TodoResource {
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance listTodos(@QueryParam("filter") String filter) {
         return todos.data("todos", find(filter))
+            .data("todo", new Todo())
+            .data("update", false)
             .data("priorities", priorities)
             .data("filter", filter)
             .data("filtered", filter != null && !filter.isEmpty());
