@@ -44,10 +44,10 @@ public class Metrics {
                         .withName(name)
                         .withType(MetricType.TIMER)
                         .withDescription("Metrics for " + path + " (" + method + ")")
-                        .build()).update(event.getDuration().toNanos(), TimeUnit.NANOSECONDS);
+                        .build()).update(event.getDuration());
             }
             else {
-                metricsRegistry.timer(name).update(event.getDuration().toNanos(), TimeUnit.NANOSECONDS);
+                metricsRegistry.timer(name).update(event.getDuration());
             }
         });
         recordingStream.startAsync();

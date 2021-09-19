@@ -1,15 +1,13 @@
-version: '3.5'
-
 services:
 
   todo-db:
-    image: postgres:11
+    image: postgres:13
     ports:
-     - 5432:5432
+     - "5432:5432"
     environment:
-     - POSTGRES_USER=todouser
-     - POSTGRES_PASSWORD=todopw
-     - POSTGRES_DB=tododb
+       POSTGRES_USER: todouser
+       POSTGRES_PASSWORD: todopw
+       POSTGRES_DB: tododb
     volumes:
      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
@@ -31,7 +29,7 @@ services:
   example-service:
     image: dev.morling/flight-recorder-example-service:1.0
     build:
-      context: example-service/
+      context: ./example-service
       dockerfile: src/main/docker/Dockerfile.${QUARKUS_MODE:-jvm}
     ports:
       - 8080:8080
@@ -74,7 +72,7 @@ services:
   jfr-data-source:
     image: dev.morling/jfr-data-source:1.0
     build:
-      context: jfr-datasource/
+      context: ./jfr-datasource
       dockerfile: docker/Dockerfile.jvm
     ports:
       - 8081:8080
