@@ -23,7 +23,7 @@ If you have cloned the repository omitting that option, you can run `git submodu
 
 ## Build
 
-Make sure to have Java 15 installed.
+Make sure to have Java 17 installed.
 Run the following to build this project:
 
 ```shell
