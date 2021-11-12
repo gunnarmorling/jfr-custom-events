@@ -29,6 +29,8 @@ jobs:
     steps:
       - name: 'Check out repository'
         uses: actions/checkout@v2
+        with:
+          submodules: 'true'
 
       - name: 'Set up Java'
         uses: actions/setup-java@v2
