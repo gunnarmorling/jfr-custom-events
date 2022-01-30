@@ -15,7 +15,7 @@ Update Feb. 8th: the example has been expanded to show the usage of the [JFR dat
 Clone the repository by running
 
 ```
-git@github.com:gunnarmorling/jfr-custom-events.git --recurse-submodules
+git clone git@github.com:gunnarmorling/jfr-custom-events.git --recurse-submodules
 ```
 
 The `--recurse-submodules` ensures that the _jfr-datasource_ sub-module will be cloned as well.
